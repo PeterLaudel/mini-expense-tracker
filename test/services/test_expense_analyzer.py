@@ -1,5 +1,3 @@
-from io import StringIO
-
 import pytest
 
 from src.services.expense_analyzer import ExpenseAnalyzer

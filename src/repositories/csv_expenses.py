@@ -1,6 +1,6 @@
 import io
 from datetime import datetime
-from typing import TextIO
+from typing import Callable, Self, TextIO
 
 from src.interfaces.expenses_repository import ExpensesRepository
 from src.models.expense import Expense
@@ -14,7 +14,7 @@ class CsvExpenses(ExpensesRepository):
         if self._csv_file.tell() == 0:
             self._csv_file.write("date,category,amount,description\n")
         self._csv_file.seek(0)
-        self._filters: list[callable[[Expense], bool]] = []
+        self._filters: list[Callable[[Expense], bool]] = []
 
     def add(
         self, *, date: datetime, category: str, amount: float, description: str
@@ -43,14 +43,14 @@ class CsvExpenses(ExpensesRepository):
         self._csv_file.seek(0)
         return expenses
 
-    def before(self, *, date: datetime) -> "CsvExpenses":
+    def before(self, *, date: datetime) -> Self:
         self._filters.append(lambda expense: expense.date < date)
         return self
 
-    def after(self, *, date: datetime) -> "CsvExpenses":
+    def after(self, *, date: datetime) -> Self:
         self._filters.append(lambda expense: expense.date > date)
         return self
 
-    def with_category(self, *, category: str) -> "CsvExpenses":
+    def with_category(self, *, category: str) -> Self:
         self._filters.append(lambda expense: expense.category == category)
         return self

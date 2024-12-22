@@ -1,13 +1,10 @@
-import io
 from abc import abstractmethod
 from datetime import datetime
-from typing import Self, TypeVar
+from typing import Self
 
 from src.models.expense import Expense
 
 from .repository import Repository
-
-T = TypeVar("T")
 
 
 class ExpensesRepository(Repository[Expense]):

@@ -4,3 +4,8 @@ VENV_BIN := $(VENV_DIR)/bin
 .PHONY: test
 test:
 	$(VENV_BIN)/pytest --durations=10 test
+
+
+.PHONY: mypy
+mypy:
+	$(VENV_BIN)/mypy .

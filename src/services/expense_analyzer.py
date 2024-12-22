@@ -11,7 +11,7 @@ class ExpenseAnalyzer:
         return sum(expense.amount for expense in self._expenses)
 
     def total_by_category(self) -> dict[str, float]:
-        total_by_category = defaultdict(float)
+        total_by_category: dict[str, float] = defaultdict(float)
         for expense in self._expenses:
             total_by_category[expense.category] += expense.amount
         return total_by_category

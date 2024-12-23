@@ -4,6 +4,7 @@ from datetime import datetime
 
 @dataclass
 class Expense:
+    id: int
     date: datetime
     category: str
     amount: float

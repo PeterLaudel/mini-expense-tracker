@@ -7,6 +7,7 @@ class ExpenseFactory(factory.Factory):
     class Meta:
         model = Expense
 
+    id = factory.Sequence(lambda n: n)
     date = factory.Faker("date_time")
     category = factory.Faker("word")
     amount = factory.Faker("random_int", min=1, max=100)

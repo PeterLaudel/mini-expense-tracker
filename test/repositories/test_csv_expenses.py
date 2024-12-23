@@ -15,7 +15,7 @@ def io():
 def test_adds_header_line_when_file_is_empty(io):
     CsvExpenses(io)
 
-    assert io.getvalue() == "date,category,amount,description\n"
+    assert io.getvalue() == "id,date,category,amount,description\n"
 
 
 def test_adds_expense(io):
@@ -29,18 +29,19 @@ def test_adds_expense(io):
 
     assert (
         io.getvalue()
-        == "date,category,amount,description\n2021-01-01T00:00:00,Food,10.0,Lunch\n"
+        == "id,date,category,amount,description\n1,2021-01-01T00:00:00,Food,10.0,Lunch\n"
     )
 
 
 def test_returns_expenses(io):
-    io.write("date,category,amount,description\n")
-    io.write("2021-01-01T00:00:00,Food,10.0,Lunch\n")
+    io.write("id,date,category,amount,description\n")
+    io.write("1,2021-01-01T00:00:00,Food,10.0,Lunch\n")
     io.seek(0)
 
     expenses = CsvExpenses(io)
     assert expenses.all() == [
         Expense(
+            id=1,
             date=datetime.fromisoformat("2021-01-01T00:00:00"),
             category="Food",
             amount=10,
@@ -50,9 +51,9 @@ def test_returns_expenses(io):
 
 
 def test_before_filters_expenses(io):
-    io.write("date,category,amount,description\n")
-    io.write("2021-01-01T00:00:00,Food,10.0,Lunch\n")
-    io.write("2021-01-02T00:00:00,Food,20.0,Dinner\n")
+    io.write("id,date,category,amount,description\n")
+    io.write("1,2021-01-01T00:00:00,Food,10.0,Lunch\n")
+    io.write("1,2021-01-02T00:00:00,Food,20.0,Dinner\n")
     io.seek(0)
 
     expenses = CsvExpenses(io)
@@ -60,6 +61,7 @@ def test_before_filters_expenses(io):
         date=datetime.fromisoformat("2021-01-02T00:00:00")
     ).all() == [
         Expense(
+            id=1,
             date=datetime.fromisoformat("2021-01-01T00:00:00"),
             category="Food",
             amount=10,
@@ -69,14 +71,15 @@ def test_before_filters_expenses(io):
 
 
 def test_after_filters_expenses(io):
-    io.write("date,category,amount,description\n")
-    io.write("2021-01-01T00:00:00,Food,10.0,Lunch\n")
-    io.write("2021-01-02T00:00:00,Food,20.0,Dinner\n")
+    io.write("id,date,category,amount,description\n")
+    io.write("1,2021-01-01T00:00:00,Food,10.0,Lunch\n")
+    io.write("1,2021-01-02T00:00:00,Food,20.0,Dinner\n")
     io.seek(0)
 
     expenses = CsvExpenses(io)
     assert expenses.after(date=datetime.fromisoformat("2021-01-01T00:00:00")).all() == [
         Expense(
+            id=1,
             date=datetime.fromisoformat("2021-01-02T00:00:00"),
             category="Food",
             amount=20,

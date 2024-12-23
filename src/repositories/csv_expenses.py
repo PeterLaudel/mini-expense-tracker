@@ -12,7 +12,7 @@ class CsvExpenses(ExpensesRepository):
         # seek to end of file to avoid reading the header
         self._csv_file.seek(0, io.SEEK_END)
         if self._csv_file.tell() == 0:
-            self._csv_file.write("date,category,amount,description\n")
+            self._csv_file.write("id,date,category,amount,description\n")
         self._csv_file.seek(0)
         self._filters: list[Callable[[Expense], bool]] = []
 
@@ -20,7 +20,9 @@ class CsvExpenses(ExpensesRepository):
         self, *, date: datetime, category: str, amount: float, description: str
     ) -> None:
         self._csv_file.seek(0, io.SEEK_END)
-        self._csv_file.write(f"{date.isoformat()},{category},{amount},{description}\n")
+        self._csv_file.write(
+            f"1,{date.isoformat()},{category},{amount},{description}\n"
+        )
         self._csv_file.seek(0)
 
     def all(self) -> list[Expense]:
@@ -28,12 +30,13 @@ class CsvExpenses(ExpensesRepository):
         lines = self._csv_file.readlines()
         expenses = [
             Expense(
+                id=int(id),
                 date=datetime.fromisoformat(date),
                 category=category,
                 amount=float(amount),
                 description=description,
             )
-            for date, category, amount, description in (
+            for id, date, category, amount, description in (
                 line.strip().split(",") for line in lines[1:]
             )
         ]

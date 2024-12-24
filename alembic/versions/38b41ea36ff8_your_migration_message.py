@@ -11,8 +11,6 @@ from typing import Sequence, Union
 import sqlalchemy as sa
 
 from alembic import op
-from src.models.expense import Expense
-from src.orm.mapper_registry import mapper_registry
 
 # revision identifiers, used by Alembic.
 revision: str = "38b41ea36ff8"
@@ -22,8 +20,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    print("NANAN")
-    expense = op.create_table(
+    op.create_table(
         "expense",
         sa.Column("id", sa.Integer(), nullable=False, primary_key=True),
         sa.Column("date", sa.DateTime(), nullable=False),

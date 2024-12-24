@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from src.interfaces.expenses_repository import ExpensesRepository
 from src.models.expense import Expense
-from src.orm.mapper_registry import mapper_registry, metadata
+from src.orm.mapper_registry import metadata
 
 
 class SqlExpenses(ExpensesRepository):

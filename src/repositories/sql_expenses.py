@@ -6,13 +6,11 @@ from sqlalchemy.orm import Session
 
 from src.interfaces.expenses_repository import ExpensesRepository
 from src.models.expense import Expense
-from src.orm.mapper_registry import metadata
 
 
 class SqlExpenses(ExpensesRepository):
     def __init__(self, session: Session):
         self._session = session
-        self._expense_table = metadata.tables["expense"]
         self._select = select(Expense)
 
     def add(

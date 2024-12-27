@@ -18,12 +18,15 @@ class CsvExpenses(ExpensesRepository):
 
     def add(
         self, *, date: datetime, category: str, amount: float, description: str
-    ) -> None:
+    ) -> Expense:
         self._csv_file.seek(0, io.SEEK_END)
         self._csv_file.write(
             f"1,{date.isoformat()},{category},{amount},{description}\n"
         )
         self._csv_file.seek(0)
+        return Expense(
+            id=1, date=date, category=category, amount=amount, description=description
+        )
 
     def all(self) -> list[Expense]:
         self._csv_file.seek(0)

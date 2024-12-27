@@ -1,10 +1,13 @@
 import json
 from abc import ABC, abstractmethod
-from typing import override
+from typing import TYPE_CHECKING, override
 
 from src.models.expense import Expense
 
 from .visitor import Visitor
+
+if TYPE_CHECKING:
+    from mypy.types import JsonDict
 
 
 class Event(ABC):
@@ -14,14 +17,14 @@ class Event(ABC):
 
     def json(self) -> str:
         return json.dumps(
-            {
+            {  # type: ignore[misc]
                 "data": self.data(),
                 "type": self.type(),
             }
         )
 
     @abstractmethod
-    def data(self) -> dict:
+    def data(self) -> "JsonDict":
         pass
 
     @abstractmethod
@@ -42,8 +45,8 @@ class ExpenseCreatedEvent(Event):
         return f"expense.{self._expense.id}.created"
 
     @override
-    def data(self) -> dict:
-        return {
+    def data(self) -> "JsonDict":
+        return {  # type: ignore[misc]
             "id": self._expense.id,
             "date": self._expense.date.isoformat(),
             "category": self._expense.category,

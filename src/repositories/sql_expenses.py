@@ -15,12 +15,15 @@ class SqlExpenses(ExpensesRepository):
 
     def add(
         self, *, date: datetime, category: str, amount: float, description: str
-    ) -> None:
-        self._session.execute(
-            insert(Expense).values(
+    ) -> Expense:
+        result = self._session.scalars(
+            insert(Expense)
+            .values(
                 date=date, category=category, amount=amount, description=description
             )
+            .returning(Expense)
         )
+        return result.one()
 
     def before(self, *, date: datetime) -> Self:
         self._select = self._select.where(Expense.date < date)  # type: ignore[arg-type]

@@ -9,22 +9,20 @@ from src.repositories.sql_expenses import SqlExpenses
 
 def test_adds_expense(session):
     expenses = SqlExpenses(session)
-    expenses.add(
+    expense = expenses.add(
         date=datetime.fromisoformat("2021-01-01T00:00:00"),
         category="Food",
         amount=10.0,
         description="Lunch",
     )
 
-    assert session.execute(text("SELECT * FROM expense")).fetchall() == [
-        (
-            ANY,
-            datetime.fromisoformat("2021-01-01T00:00:00"),
-            "Food",
-            10.0,
-            "Lunch",
-        )
-    ]
+    assert expense == Expense(
+        id=ANY,
+        date=datetime.fromisoformat("2021-01-01T00:00:00"),
+        category="Food",
+        amount=10.0,
+        description="Lunch",
+    )
 
 
 def test_returns_expenses(session):

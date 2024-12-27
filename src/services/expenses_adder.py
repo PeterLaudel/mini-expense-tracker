@@ -1,6 +1,8 @@
 from abc import abstractmethod
 from datetime import datetime
 
+from src.events.event import ExpenseCreatedEvent
+from src.events.event_handler import EventHandler
 from src.interfaces.expenses_repository import ExpensesRepository
 from src.interfaces.unit_of_work import UnitOfWork
 
@@ -9,6 +11,11 @@ class ExpensesUnitOfWork(UnitOfWork):
     @property
     @abstractmethod
     def expenses(self) -> ExpensesRepository:
+        pass
+
+    @property
+    @abstractmethod
+    def event_handler(self) -> EventHandler:
         pass
 
 
@@ -25,10 +32,11 @@ class ExpensesAdder:
         description: str,
     ) -> None:
         with self._expenses_unit_of_work as uow:
-            uow.expenses.add(
+            expense = uow.expenses.add(
                 date=date,
                 category=category,
                 amount=amount,
                 description=description,
             )
+            uow.event_handler.add_event(ExpenseCreatedEvent(expense))
             uow.commit()

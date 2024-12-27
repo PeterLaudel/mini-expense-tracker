@@ -11,7 +11,7 @@ class ExpensesRepository(Repository[Expense]):
     @abstractmethod
     def add(
         self, *, date: datetime, category: str, amount: float, description: str
-    ) -> None:
+    ) -> Expense:
         pass
 
     @abstractmethod

@@ -3,8 +3,9 @@ from typing import Self, override
 
 from sqlalchemy.orm import Session, sessionmaker
 
-from src.interfaces.expenses_unit_of_work import ExpensesUnitOfWork
+from src.interfaces.expenses_repository import ExpensesRepository
 from src.repositories.sql_expenses import SqlExpenses
+from src.services.expenses_adder import ExpensesUnitOfWork
 
 
 class SqlExpensesUnitOfWork(ExpensesUnitOfWork):
@@ -13,6 +14,7 @@ class SqlExpensesUnitOfWork(ExpensesUnitOfWork):
         session_factory: sessionmaker[Session],
     ):
         self._session_factory = session_factory
+        self._expenses_repository: SqlExpenses | None = None
 
     @override
     def __enter__(self) -> Self:
@@ -29,6 +31,13 @@ class SqlExpensesUnitOfWork(ExpensesUnitOfWork):
     ) -> None:
         super().__exit__(_type, _value, _traceback)
         self._session.close()
+
+    @property
+    @override
+    def expenses(self) -> ExpensesRepository:
+        if self._expenses_repository is None:
+            raise ValueError("Session not available")
+        return self._expenses_repository
 
     @override
     def commit(self) -> None:

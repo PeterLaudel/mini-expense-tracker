@@ -1,6 +1,10 @@
 from typing import TYPE_CHECKING, override
 
+from sqlalchemy import insert
 from sqlalchemy.orm import Session
+
+from src.events.event import Event
+from src.orm.mapper_registry import metadata
 
 from .visitor import Visitor
 
@@ -13,7 +17,11 @@ class SqlVisitor(Visitor):
         self._session = session
 
     @override
-    def visit_expense_created(self, expense_created: "ExpenseCreatedEvent") -> None:
-        print(
-            f"INSERT INTO expenses (date, category, amount, description) VALUES ('{expense_created.expense.date}', '{expense_created.expense.category}', {expense_created.expense.amount}, '{expense_created.expense.description}');"
+    def visit_expense_created(
+        self, expense_created_event: "ExpenseCreatedEvent"
+    ) -> None:
+        self._session.execute(
+            insert(metadata.tables["event"]).values(
+                type=expense_created_event.type(), json=expense_created_event.json()
+            )
         )

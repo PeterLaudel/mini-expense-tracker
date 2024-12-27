@@ -78,7 +78,8 @@ def test_after_filters_expenses(session):
     )
 
     expenses = SqlExpenses(session)
-    assert expenses.after(date=datetime.fromisoformat("2021-01-01T00:00:00")).all() == [
+    all = expenses.after(date=datetime.fromisoformat("2021-01-01T00:00:00")).all()
+    assert all == [
         Expense(
             ANY,
             datetime.fromisoformat("2021-01-02T00:00:00"),
